@@ -1,6 +1,8 @@
-require 'oystercard.rb'
+
 
 class Barrier
+
+  attr_reader :passed_barrier
 
   def initialize
     @passed_barrier = []
@@ -12,10 +14,13 @@ class Barrier
   end
 
   def touch_out(oystercard)
-    touch_in(oystercard).delete(oystercard)
+    oystercard.deduct(Oystercard::MIN_BALANCE)
+    passed_barrier.delete(oystercard)  
   end
 
   def in_journey?(oystercard)
     true if @passed_barrier.include?(oystercard)
   end
+
+
 end

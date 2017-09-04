@@ -4,26 +4,28 @@ require 'barrier.rb'
 describe Barrier do
   subject(:barrier) { described_class.new }
   let(:oystercard) { Oystercard.new }
+  let (:oystercard_with_two_pound) { Oystercard.new(2)}
 
   context 'Barrier access' do
     it 'touches in at barrier' do
-      oystercard_with_one_pound = Oystercard.new(2)
-      expect(subject.touch_in(oystercard_with_one_pound)).to eq [oystercard_with_one_pound]
+      expect(subject.touch_in(oystercard_with_two_pound)).to eq [oystercard_with_two_pound]
     end
 
     it 'touches out of barrier' do
-      oystercard_with_one_pound = Oystercard.new(2)
-      expect(subject.touch_out(oystercard_with_one_pound)).to eq oystercard_with_one_pound
+      expect(subject.touch_out(oystercard_with_two_pound)).to eq nil
     end
 
     it 'checks if oystercard is in journey from barrier' do
-      oystercard_with_one_pound = Oystercard.new(2)
-      barrier.touch_in(oystercard_with_one_pound)
-      expect(subject.in_journey?(oystercard_with_one_pound)).to eq true
+      barrier.touch_in(oystercard_with_two_pound)
+      expect(subject.in_journey?(oystercard_with_two_pound)).to eq true
     end
 
     it 'denies access if balance is less than £1' do
       expect { subject.touch_in oystercard }.to raise_error 'Insufficient funds'
+    end
+
+    it 'deducts from balance when #touch_out' do
+      expect {subject.touch_out oystercard_with_two_pound}.to change{oystercard_with_two_pound.balance}.by(-Oystercard::MIN_BALANCE)
     end
   end
 end
