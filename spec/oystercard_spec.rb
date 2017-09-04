@@ -36,6 +36,10 @@ describe Oystercard do
       expect( barrier.touch_in oystercard ).to eq [oystercard]
     end
 
+    it 'touches out of barrier' do
+      expect( barrier.touch_out oystercard ).to eq oystercard
+    end
+
   end
 
 end
