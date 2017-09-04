@@ -7,14 +7,13 @@ class Oystercard
   end
 
   def top_up(money)
-    fail "I'm too full of money - I can only take £#{MAX_BALANCE}!" if @balance + money > MAX_BALANCE
+    raise "I'm too full of money - I can only take £#{MAX_BALANCE}!" if @balance + money > MAX_BALANCE
     @balance += money
   end
 
   def deduct(money)
-    #fail "I'm too full of money - I can only take £#{MAX_BALANCE}!" if
-    #@balance + money > MAX_BALANCE
+    # fail "I'm too full of money - I can only take £#{MAX_BALANCE}!" if
+    # @balance + money > MAX_BALANCE
     @balance -= money
   end
-
 end
