@@ -26,20 +26,7 @@ describe Oystercard do
       subject.top_up maximum_balance
       expect { subject.top_up 91 }.to raise_error "I'm too full of money - I can only take £90!"
     end
+
   end
 
-  context 'Barrier access' do
-    it 'touches in at barrier' do
-      expect(barrier.touch_in(oystercard)).to eq [oystercard]
-    end
-
-    it 'touches out of barrier' do
-      expect(barrier.touch_out(oystercard)).to eq oystercard
-    end
-
-    it 'checks if oystercard is in journey from barrier' do
-      barrier.touch_in(oystercard)
-      expect(barrier.in_journey? oystercard ).to eq true
-    end
-  end
 end

@@ -1,11 +1,13 @@
 require 'oystercard.rb'
 
 class Barrier
+
   def initialize
     @passed_barrier = []
   end
 
   def touch_in(oystercard)
+    fail "Insufficient funds" if oystercard.balance <= 1
     @passed_barrier << oystercard
   end
 
