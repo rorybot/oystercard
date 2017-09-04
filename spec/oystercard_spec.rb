@@ -4,6 +4,7 @@ require 'barrier.rb'
 describe Oystercard do
   subject(:oystercard) { described_class.new }
   let(:barrier) { Barrier.new }
+  let (:oystercard_with_two_pound) { Oystercard.new(2)}
 
   context 'Balance management' do
     it '#zero_money_on_card_initialisation' do
@@ -27,4 +28,14 @@ describe Oystercard do
       expect { subject.top_up 91 }.to raise_error "I'm too full of money - I can only take £90!"
     end
   end
+
+
+context 'Journey' do
+  it 'checks if oystercard is in journey from barrier' do
+    barrier.touch_in(oystercard_with_two_pound)
+    expect(oystercard_with_two_pound.in_journey? barrier).to eq true
+  end
+end
+
+
 end

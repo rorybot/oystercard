@@ -14,7 +14,11 @@ class Oystercard
     @balance += money
   end
 
+  def in_journey?(barrier)
+    barrier.station.include?(self)
+  end
 
+#Cannot make this private
   def deduct(money)
     # fail "I'm too full of money - I can only take £#{MAX_BALANCE}!" if
     # @balance + money > MAX_BALANCE
