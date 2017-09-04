@@ -1,6 +1,7 @@
 class Oystercard
   attr_reader :balance
   MAX_BALANCE = 90
+  MIN_BALANCE = 1
 
   def initialize(balance = 0)
     @balance = balance

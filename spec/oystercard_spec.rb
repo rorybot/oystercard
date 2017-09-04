@@ -26,7 +26,5 @@ describe Oystercard do
       subject.top_up maximum_balance
       expect { subject.top_up 91 }.to raise_error "I'm too full of money - I can only take £90!"
     end
-
   end
-
 end

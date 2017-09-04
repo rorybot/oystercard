@@ -7,7 +7,7 @@ class Barrier
   end
 
   def touch_in(oystercard)
-    fail "Insufficient funds" if oystercard.balance <= 1
+    raise 'Insufficient funds' if oystercard.balance <= Oystercard::MIN_BALANCE
     @passed_barrier << oystercard
   end
 
@@ -16,9 +16,6 @@ class Barrier
   end
 
   def in_journey?(oystercard)
-    if @passed_barrier.include?(oystercard)
-      true
-    end
+    true if @passed_barrier.include?(oystercard)
   end
-
 end
