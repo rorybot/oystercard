@@ -1,41 +1,107 @@
-require 'oystercard.rb'
-require 'barrier.rb'
+require 'oystercard'
 
-describe Oystercard do
-  subject(:oystercard) { described_class.new }
-  let(:barrier) { Barrier.new }
-  let (:oystercard_with_two_pound) { Oystercard.new(2)}
+RSpec.describe Oystercard do
 
-  context 'Balance management' do
-    it '#zero_money_on_card_initialisation' do
-      expect(oystercard.balance).to eq 0
-    end
-
-    it '#top_up balance of a card' do
-      oystercard.top_up(1)
-      expect(oystercard.balance).to eq 1
-    end
-
-    it '#deduct balance of a card' do
-      oystercard_with_one_pound = Oystercard.new(1)
-      oystercard_with_one_pound.deduct(1)
-      expect(oystercard_with_one_pound.balance).to eq 0
-    end
-
-    it '#top_up raise exception if balance exceeds limit' do
-      maximum_balance = Oystercard::MAX_BALANCE
-      subject.top_up maximum_balance
-      expect { subject.top_up 91 }.to raise_error "I'm too full of money - I can only take £90!"
+  describe 'oystercard initialisation' do
+    it 'creates a wallet with £10' do
+      some_money = 10
+      new_card = Oystercard.new(some_money)
+      expect(new_card.what_is_balance).to eq 10
     end
   end
 
-
-context 'Journey' do
-  it 'checks if oystercard is in journey from barrier' do
-    barrier.touch_in(oystercard_with_two_pound)
-    expect(oystercard_with_two_pound.in_journey? barrier).to eq true
+  describe 'oystercard initializing with default balance' do
+    it 'new cards have a £5 default balance from Balance.new' do
+      expect(subject.what_is_balance).to eq Oystercard::DEFAULT_BALANCE
+    end
   end
-end
+
+  describe '#top_up' do
+    it 'increments balance by top up amount' do
+      expect { subject.top_up(5) }.to change { subject.what_is_balance}.by 5
+    end
+    it 'raise error for exceeding max balance' do
+      expect { subject.top_up(95) }.to raise_error "Exceed max balance: #{Balance::MAX_BALANCE}"
+    end
+    it 'raise error for exceeding max balance' do
+      subject.top_up(35)
+      expect { subject.top_up(70) }.to raise_error "Exceed max balance: #{Balance::MAX_BALANCE}"
+    end
+  end
+
+  describe '#touch_in' do
+    let(:station) { double 'station' }
+
+    it 'fail if insufficient balance' do
+      no_money_card = Oystercard.new(0)
+      expect { no_money_card.touch_in }.to raise_error("Current balance less than minimum journey fee #{Oystercard::MIN_FEE}")
+    end
+
+  end
+
+  describe '#touch_out' do
+    let(:station) { double 'station' }
+
+    it 'reduces balance by min journey fee' do
+      subject.touch_in
+      expect { subject.touch_out }.to change { subject.what_is_balance }.by(-described_class::MIN_FEE)
+    end
 
 
+  end
+
+  describe '#journey_history' do
+    let(:station_1) { double 'Station1' }
+    let(:station_2) { double 'Station2' }
+
+    it 'is an empty array for new cards' do
+      expect(subject.journey_history_hash).to be_empty
+    end
+
+    it 'passes "touch in" and card-object to journey history' do
+      ideal_state = { :touch_in => subject}
+      subject.touch_in
+      expect(subject.journey_history_hash).to eq ideal_state
+    end
+
+    it 'passes "touch out" and card-object to journey history' do
+      ideal_state = { :touch_out => subject}
+      subject.touch_out
+      expect(subject.journey_history_hash).to eq ideal_state
+    end
+
+    it 'accesses a complete journey history' do
+      ideal_state = {:touch_in => subject, :touch_out => subject}
+      subject.touch_in
+      subject.touch_out
+      expect(subject.journey_history_hash).to eq ideal_state
+    end
+
+
+      describe 'fare' do
+          it 'charges fare' do
+            subject.touch_out
+            expect(subject.fare :touch_in).to eq Oystercard::MIN_FEE
+          end
+
+          it 'charges penalty fare if exit with outstanding exit in history' do
+            subject.touch_out
+            expect{subject.touch_out}.to change { subject.what_is_balance }.by(-described_class::PENALTY_FARE)
+          end
+
+      end
+
+
+
+
+
+    #
+    # it "finds the Journey object's entrance in the journey history array" do
+    #   subject.touch_in 'Station1'
+    #   subject.touch_out 'Station2'
+    #   expect(subject.journey_history[0].entry_station).to eq 'Station1'
+    # end
+
+
+  end
 end
