@@ -22,15 +22,15 @@ class Oystercard
 
   def touch_in
     raise "Current balance less than minimum journey fee #{MIN_FEE}" if what_is_balance < MIN_FEE
-      journey_history_hash[:touch_in] = self
+      journey_history_hash["touch_in"] = self
   end
 
   def touch_out
     # journey_history << create_a_journey(entry_station, exit_station)
     #  journey_history << Journey.new(entry_station, exit_station)
     @entry_station = nil
+    journey_history_hash["touch_out"] = self
     balance.change_balance(:subtract, fare(:touch_out) )
-    journey_history_hash[:touch_out] = self
   end
 
   def create_a_journey(entry_station, exit_station)
@@ -55,7 +55,7 @@ class Oystercard
   end
 
   def last_barrier_status_equals(current_status)
-    journey_history_hash.keys.last == (current_status)
+    journey_history_hash["touch_in"] == nil
   end
 
   private

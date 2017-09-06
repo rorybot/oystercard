@@ -55,23 +55,24 @@ RSpec.describe Oystercard do
     let(:station_2) { double 'Station2' }
 
     it 'is an empty array for new cards' do
-      expect(subject.journey_history_hash).to be_empty
+      nil_state_hash = {"touch_in" => nil, "touch_out" => nil}
+      expect(subject.journey_history_hash).to eq nil_state_hash
     end
 
     it 'passes "touch in" and card-object to journey history' do
-      ideal_state = { :touch_in => subject}
+      ideal_state = { "touch_in" => subject, "touch_out" => nil}
       subject.touch_in
       expect(subject.journey_history_hash).to eq ideal_state
     end
 
     it 'passes "touch out" and card-object to journey history' do
-      ideal_state = { :touch_out => subject}
+      ideal_state = { "touch_in" => nil, "touch_out" => subject}
       subject.touch_out
       expect(subject.journey_history_hash).to eq ideal_state
     end
 
     it 'accesses a complete journey history' do
-      ideal_state = {:touch_in => subject, :touch_out => subject}
+      ideal_state = {"touch_in" => subject, "touch_out" => subject}
       subject.touch_in
       subject.touch_out
       expect(subject.journey_history_hash).to eq ideal_state
@@ -79,8 +80,8 @@ RSpec.describe Oystercard do
 
 
       describe 'fare' do
-          it 'charges fare' do
-            subject.touch_out
+          it 'expecting to charge usual fare when leave' do
+            subject.touch_in
             expect(subject.fare :touch_in).to eq Oystercard::MIN_FEE
           end
 

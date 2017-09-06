@@ -5,7 +5,7 @@ class Journey
   def initialize
     @entry_station
     @exit_station
-    @journey_history = {}
+    @journey_history = {"touch_in" => nil, "touch_out" => nil}
   end
 
 
