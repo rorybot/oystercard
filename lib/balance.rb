@@ -11,11 +11,8 @@ class Balance
     @current_balance
   end
 
-  def
 
-  def journey_history
-    @journey_history = []
-  end
+
 
   def change_balance(function, amount)
     if function == :add

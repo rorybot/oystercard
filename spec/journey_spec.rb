@@ -15,7 +15,6 @@ RSpec.describe Journey do
     #
     # end
 
-
     it 'registers barrier pass' do
       expect(subject.exit_station). to eq nil
     end
